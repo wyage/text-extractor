@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 public class ExtractUtils {
 	
 	/**
-	 * 从流里面读取字符内容
+	 * 浠庢祦閲岄潰璇诲彇瀛楃鍐呭
 	 * @param is
 	 * @return
 	 */
