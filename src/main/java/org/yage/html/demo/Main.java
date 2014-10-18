@@ -19,7 +19,7 @@ public class Main {
     	ContentExtractor me=new ContentExtractor();
         me.setUseTitleTag(true);
         
-        String fname="org/yage/html/demo/a1.htm";
+        String fname="a1.htm";
         InputStream istream=null;
         FileWriter fwriter=null;
         try{

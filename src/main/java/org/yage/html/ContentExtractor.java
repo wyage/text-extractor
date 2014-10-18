@@ -24,22 +24,22 @@ import org.xml.sax.SAXException;
  */
 public class ContentExtractor{
 	
-    /*HTMLµÄÔ´´úÂë£¬ĞèÒªÓÃ»§Ö¸¶¨*/
+    /*HTMLçš„æºä»£ç ï¼Œéœ€è¦ç”¨æˆ·æŒ‡å®š*/
     private String htmlSourceCode;
     
-    /*Êä³öµ½ÄÄ£¬ĞèÒªÓÃ»§Ö¸¶¨*/
+    /*è¾“å‡ºåˆ°å“ªï¼Œéœ€è¦ç”¨æˆ·æŒ‡å®š*/
     private Writer outputWriter;
     
-    /*ÌáÈ¡µÄÊ±ºòÊÇ·ñ°üº¬titleÄÚµÄÎÄ±¾*/
+    /*æå–çš„æ—¶å€™æ˜¯å¦åŒ…å«titleå†…çš„æ–‡æœ¬*/
     private boolean useTitleTag;
     
-    /*×î¶ÌµÄ³¤¶È*/
+    /*æœ€çŸ­çš„é•¿åº¦*/
     private int miniLength;
     
-    /*×îĞ¡µÄ°Ù·Ö±È*/
+    /*æœ€å°çš„ç™¾åˆ†æ¯”*/
     private float miniPercent;
     
-    /*HTML½âÎöÆ÷*/
+    /*HTMLè§£æå™¨*/
     private DOMParser parser;
     
     private static String strTwenty="12345678901234567890";
@@ -57,9 +57,9 @@ public class ContentExtractor{
     }
     
     /**
-     * ¶ÔÄ³Ò»¶ÎHTMLÔ´´úÂë½øĞĞ³éÈ¡
+     * å¯¹æŸä¸€æ®µHTMLæºä»£ç è¿›è¡ŒæŠ½å–
      * @param htmlcode
-     * @return ³éÈ¡Ö®ºóµÄÕıÎÄ
+     * @return æŠ½å–ä¹‹åçš„æ­£æ–‡
      */
     public String doExtracting(String htmlcode){
     	StringWriter stringWriter=new StringWriter();
@@ -69,7 +69,7 @@ public class ContentExtractor{
     }
     
     /**
-     * Ö´ĞĞ³éÈ¡ÈÎÎñ
+     * æ‰§è¡ŒæŠ½å–ä»»åŠ¡
      * @param htmlcode
      * @param writer
      */
@@ -89,7 +89,7 @@ public class ContentExtractor{
             int len=nodes.getLength();
             for(int i=0;i<len;i++){
                 if(isStringEmpty(nodes.item(i).getTextContent())){
-                    //ÄÚÈİÎª¿Õ£¬ºöÂÔÖ®
+                    //å†…å®¹ä¸ºç©ºï¼Œå¿½ç•¥ä¹‹
                 }else{
                     processNodes(nodes.item(i));
                 }
@@ -119,27 +119,27 @@ public class ContentExtractor{
         temp|=nodename.equalsIgnoreCase("a");
         temp|=nodename.equalsIgnoreCase("noScript");
         if(!this.useTitleTag){
-            //¿´ÊÇ·ñÏëÒª°üº¬TITLEÀïµÄÄÚÈİ
+            //çœ‹æ˜¯å¦æƒ³è¦åŒ…å«TITLEé‡Œçš„å†…å®¹
             temp|=nodename.equalsIgnoreCase("head");
         }
         if(temp){
             return;
         }else if(hasTextChild(node)>0){
-            //Èç¹ûÓĞ·Ç¿ÕÎÄ±¾º¢×Ó½áµã£¬ÔòÆÀ¹ÀÖ®£¬·ñÔòÔÙ¼ÌĞø±éÀúÖ®
+            //å¦‚æœæœ‰éç©ºæ–‡æœ¬å­©å­ç»“ç‚¹ï¼Œåˆ™è¯„ä¼°ä¹‹ï¼Œå¦åˆ™å†ç»§ç»­éå†ä¹‹
             evaluateIt(node);
             return;
         }
         int len=nodes.getLength();
         for(int i = 0;i<len;i++){
             if(nodes.item(i).getTextContent().length()>0){
-                //Èç¹ûÕâ¸öº¢×Ó½áµãµÄÎÄ±¾³¤¶È´óÓÚ0£¬Ôò¼ÌĞø´¦ÀíÖ®£¬·ñÔòÅ×Æú
+                //å¦‚æœè¿™ä¸ªå­©å­ç»“ç‚¹çš„æ–‡æœ¬é•¿åº¦å¤§äº0ï¼Œåˆ™ç»§ç»­å¤„ç†ä¹‹ï¼Œå¦åˆ™æŠ›å¼ƒ
                 processNodes(nodes.item(i));
             }
         }
     }
     
     /**
-     * ·µ»ØËüµÄº¢×Ó½áµãÖ®ÖĞµÄ·Ç¿ÕµÄÎÄ±¾½áµãµÄ¸öÊı
+     * è¿”å›å®ƒçš„å­©å­ç»“ç‚¹ä¹‹ä¸­çš„éç©ºçš„æ–‡æœ¬ç»“ç‚¹çš„ä¸ªæ•°
      * @param x
      * @return
      */
@@ -157,7 +157,7 @@ public class ContentExtractor{
     }
     
     /**
-     * Õâ¸ö½áµã¾ßÓĞÕıÎÄÌØÕ÷£¬ÔÙ½øÒ»²½¿´¿´µ½µ×ÊÇ²»ÊÇ
+     * è¿™ä¸ªç»“ç‚¹å…·æœ‰æ­£æ–‡ç‰¹å¾ï¼Œå†è¿›ä¸€æ­¥çœ‹çœ‹åˆ°åº•æ˜¯ä¸æ˜¯
      * @param node
      * @throws IOException
      */
@@ -170,13 +170,13 @@ public class ContentExtractor{
             if(content.length()<this.miniLength){
                 return;
             }
-            //ÏÂÃæÊÇĞÂµÄ¼ÆËã·½·¨
+            //ä¸‹é¢æ˜¯æ–°çš„è®¡ç®—æ–¹æ³•
             StringPair mp=getStatus(node);
             res=mp.strHref.length();
             res/=(mp.strOther.length());
             if(res<this.miniPercent){
                 if(finalProcess(mp.strOther).trim().length()>this.getMiniLength()){
-                    //ÊÇµÄ£¬Õâ¾ÍÊÇÏëÒªµÄ£¡£¡£¡
+                    //æ˜¯çš„ï¼Œè¿™å°±æ˜¯æƒ³è¦çš„ï¼ï¼ï¼
                     if(this.outputComment){
                         this.bufferedWriter.write(mp.strOther+"["+mp+"="+res+"\r\n]");
                     }else{
@@ -188,7 +188,7 @@ public class ContentExtractor{
     }
     
     /**
-     * ´Ëº¯Êı²é¿´Õâ¸ö½áµãÀïµÄÄÚÈİÖĞµÄ¡°Á´½ÓÎÄ±¾ºÍÆäËûÎÄ±¾µÄ±ÈÀı¡± 
+     * æ­¤å‡½æ•°æŸ¥çœ‹è¿™ä¸ªç»“ç‚¹é‡Œçš„å†…å®¹ä¸­çš„â€œé“¾æ¥æ–‡æœ¬å’Œå…¶ä»–æ–‡æœ¬çš„æ¯”ä¾‹â€ 
      * @param node
      * @return
      */
@@ -199,15 +199,15 @@ public class ContentExtractor{
         while(child!=null){
             if(child.getNodeName().equalsIgnoreCase("A")){
                 String x=child.getTextContent().trim();
-                x=((x == null ? "" == null : x.equals(""))?strTwenty:x);//¼ÈÈ»ÓĞÁ´½ÓÄÇ²»Ì«¿ÉÄÜÊÇ¿ÕµÄ£¬Ö»ÊÇ²»ÄÜÓÃÎÄ×Ö±íÊ¾°ÕÁË£¬À´20
+                x=((x == null ? "" == null : x.equals(""))?strTwenty:x);//æ—¢ç„¶æœ‰é“¾æ¥é‚£ä¸å¤ªå¯èƒ½æ˜¯ç©ºçš„ï¼Œåªæ˜¯ä¸èƒ½ç”¨æ–‡å­—è¡¨ç¤ºç½¢äº†ï¼Œæ¥20
                 res.strHref+=x;
                 res.strOther+=x;
             }else if(child.getNodeName().equalsIgnoreCase("script")){
-                //ÄÚÈİ²»¼Æ
+                //å†…å®¹ä¸è®¡
             }else if(child.getNodeName().equalsIgnoreCase("#comment")){
-                //ÄÚÈİ²»¼Æ
+                //å†…å®¹ä¸è®¡
             }else if(child.getNodeName().equalsIgnoreCase("style")){
-                //ÄÚÈİ²»¼Æ
+                //å†…å®¹ä¸è®¡
             }else if(child.getChildNodes().getLength()>0){
                 temp=getStatus(child);
                 res.strHref+=temp.strHref;
@@ -221,7 +221,7 @@ public class ContentExtractor{
     }
     
     /**
-     * ÊÇ·ñÊÇ¿Õ×Ö·û´®£¬¹¤¾ß·½·¨
+     * æ˜¯å¦æ˜¯ç©ºå­—ç¬¦ä¸²ï¼Œå·¥å…·æ–¹æ³•
      * @param s
      * @return
      */
@@ -236,10 +236,10 @@ public class ContentExtractor{
     }
     
     public static String finalProcess(String str){
-        str=str.replaceAll("[\\[\\]\\d\\|,#$%^&*()_+-=:!~;.'\"£º£»¡°¡®£ü¡¢¡£¡·¡¶]","");
+        str=str.replaceAll("[\\[\\]\\d\\|,#$%^&*()_+-=:!~;.'\"ï¼šï¼›â€œâ€˜ï½œã€ã€‚ã€‹ã€Š]","");
         String k=str.replaceAll("[\\w*]","");
         if(k.length()!=0){
-            //¼ÈÈ»Ëüº¬ÓĞÖĞÎÄ£¬ÄÇË÷ĞÔ°ÑËùÓĞµÄÓ¢ÎÄÈ«²¿È¥µô
+            //æ—¢ç„¶å®ƒå«æœ‰ä¸­æ–‡ï¼Œé‚£ç´¢æ€§æŠŠæ‰€æœ‰çš„è‹±æ–‡å…¨éƒ¨å»æ‰
             return k;
         }
         return str;
