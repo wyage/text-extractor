@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -64,6 +65,7 @@ public class ContentExtractor{
     public String doExtracting(String htmlcode){
     	StringWriter stringWriter=new StringWriter();
     	this.bufferedWriter=new BufferedWriter(stringWriter);
+    	this.htmlSourceCode=htmlcode;
     	this.doExtracting();
     	return stringWriter.getBuffer().toString();
     }
@@ -118,6 +120,8 @@ public class ContentExtractor{
         temp|=nodename.equalsIgnoreCase("style");
         temp|=nodename.equalsIgnoreCase("a");
         temp|=nodename.equalsIgnoreCase("noScript");
+        //added by voyage, 2015-9-6 15:57:37
+        temp|=nodename.equalsIgnoreCase("iframe");
         if(!this.useTitleTag){
             //看是否想要包含TITLE里的内容
             temp|=nodename.equalsIgnoreCase("head");
@@ -179,6 +183,7 @@ public class ContentExtractor{
                     //是的，这就是想要的！！！
                     if(this.outputComment){
                         this.bufferedWriter.write(mp.strOther+"["+mp+"="+res+"\r\n]");
+                        
                     }else{
                         this.bufferedWriter.write(mp.strOther+"\r\n");
                     }
