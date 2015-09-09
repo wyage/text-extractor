@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,16 +24,16 @@ import org.xml.sax.SAXException;
  */
 public class ContentExtractor{
 	
-    /*HTML的源代码，需要用户指定*/
+    /*HTML code of the page for extracting*/
     private String htmlSourceCode;
     
-    /*输出到哪，需要用户指定*/
+    /*result output destination*/
     private Writer outputWriter;
     
-    /*提取的时候是否包含title内的文本*/
+    /*whether consider <title> element content when extracting*/
     private boolean useTitleTag;
     
-    /*最短的长度*/
+    /*only paragraphs longer than miniLength characters will be considered main content*/
     private int miniLength;
     
     /*最小的百分比*/
@@ -81,17 +80,19 @@ public class ContentExtractor{
     	this.doExtracting();
     }
     
+    /**
+     * do extracting task
+     */
     public void doExtracting(){
         this.parser.reset();
         try{
             this.parser.parse(new InputSource(new StringReader(htmlSourceCode)));
-            //this.parse(ame, destFileName, null, destFileName));//.parse(file.toURI().toURL().toString());
             Document d=parser.getDocument();
             NodeList nodes=d.getChildNodes();
             int len=nodes.getLength();
             for(int i=0;i<len;i++){
                 if(isStringEmpty(nodes.item(i).getTextContent())){
-                    //内容为空，忽略之
+                    //empty content, ignore it
                 }else{
                     processNodes(nodes.item(i));
                 }
@@ -123,7 +124,7 @@ public class ContentExtractor{
         //added by voyage, 2015-9-6 15:57:37
         temp|=nodename.equalsIgnoreCase("iframe");
         if(!this.useTitleTag){
-            //看是否想要包含TITLE里的内容
+            //where consider title tag
             temp|=nodename.equalsIgnoreCase("head");
         }
         if(temp){
@@ -174,16 +175,15 @@ public class ContentExtractor{
             if(content.length()<this.miniLength){
                 return;
             }
-            //下面是新的计算方法
+            //new calculation method
             StringPair mp=getStatus(node);
             res=mp.strHref.length();
             res/=(mp.strOther.length());
             if(res<this.miniPercent){
                 if(finalProcess(mp.strOther).trim().length()>this.getMiniLength()){
-                    //是的，这就是想要的！！！
+                    //yes, this is what we want
                     if(this.outputComment){
                         this.bufferedWriter.write(mp.strOther+"["+mp+"="+res+"\r\n]");
-                        
                     }else{
                         this.bufferedWriter.write(mp.strOther+"\r\n");
                     }
@@ -226,9 +226,9 @@ public class ContentExtractor{
     }
     
     /**
-     * 是否是空字符串，工具方法
-     * @param s
-     * @return
+     * utility method, test if string is empty
+     * @param s String to test
+     * @return true or false
      */
     public static boolean isStringEmpty(String s){
     	if(s==null){
