@@ -19,27 +19,41 @@ import org.xml.sax.SAXException;
 /**
  * class for extracting main text content from a web page
  * getting rid of ad-words, navigation-links, etc.
+ * is not thread-safe
  * @author beethoven99@126.com
  * @since 0.1
  */
 public class ContentExtractor{
 	
-    /*HTML code of the page for extracting*/
+    /**
+     * HTML code of the page for extracting
+     */
     private String htmlSourceCode;
     
-    /*result output destination*/
+    /**
+     * result output destination
+     */
     private Writer outputWriter;
     
-    /*whether consider <title> element content when extracting*/
+    /**
+     * whether consider <title> element content when extracting
+     */
     private boolean useTitleTag;
     
-    /*only paragraphs longer than miniLength characters will be considered main content*/
+    /**
+     * only paragraphs longer than miniLength characters will be considered main content
+     */
     private int miniLength;
     
-    /*最小的百分比*/
+    /**
+     * the ratio of non-link text length, bigger than this value should not be 
+     * seem as main text
+     */
     private float miniPercent;
     
-    /*HTML解析器*/
+    /**
+     * HTML parser
+     */
     private DOMParser parser;
     
     private static String strTwenty="12345678901234567890";
@@ -57,9 +71,9 @@ public class ContentExtractor{
     }
     
     /**
-     * 对某一段HTML源代码进行抽取
+     * do extracting task, using the specified html code as input
      * @param htmlcode
-     * @return 抽取之后的正文
+     * @return result
      */
     public String doExtracting(String htmlcode){
     	StringWriter stringWriter=new StringWriter();
@@ -70,7 +84,7 @@ public class ContentExtractor{
     }
     
     /**
-     * 执行抽取任务
+     * do extracting task
      * @param htmlcode
      * @param writer
      */
@@ -130,22 +144,22 @@ public class ContentExtractor{
         if(temp){
             return;
         }else if(hasTextChild(node)>0){
-            //如果有非空文本孩子结点，则评估之，否则再继续遍历之
+        	//evaluate it when containing non-empty child text node
             evaluateIt(node);
             return;
         }
         int len=nodes.getLength();
         for(int i = 0;i<len;i++){
             if(nodes.item(i).getTextContent().length()>0){
-                //如果这个孩子结点的文本长度大于0，则继续处理之，否则抛弃
+            	//if this child node has non-empty content, then process it
                 processNodes(nodes.item(i));
             }
         }
     }
     
     /**
-     * 返回它的孩子结点之中的非空的文本结点的个数
-     * @param x
+     * calculate the count of its empty-text child node
+     * @param x node to calculate
      * @return
      */
     private static int hasTextChild(Node x){
@@ -162,7 +176,7 @@ public class ContentExtractor{
     }
     
     /**
-     * 这个结点具有正文特征，再进一步看看到底是不是
+     * looks like a main-text paragraph, then look further into it
      * @param node
      * @throws IOException
      */
