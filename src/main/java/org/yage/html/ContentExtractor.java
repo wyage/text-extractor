@@ -62,6 +62,10 @@ public class ContentExtractor{
     
     private BufferedWriter bufferedWriter;
     
+    private static String badText[]={
+    	"[an error occurred while processing this directive]"
+    };
+    
     public ContentExtractor(){
         this.parser=new DOMParser();
         this.useTitleTag=false;
@@ -98,7 +102,10 @@ public class ContentExtractor{
      * do extracting task
      */
     public void doExtracting(){
-        this.parser.reset();
+        this.parser=new DOMParser();
+        if(this.outputComment){
+        	System.out.println("length of html code:"+htmlSourceCode.length());
+        }
         try{
             this.parser.parse(new InputSource(new StringReader(htmlSourceCode)));
             Document d=parser.getDocument();
@@ -107,6 +114,9 @@ public class ContentExtractor{
             for(int i=0;i<len;i++){
                 if(isStringEmpty(nodes.item(i).getTextContent())){
                     //empty content, ignore it
+                	if(this.outputComment){
+                		System.out.println("empty content,ignore:"+nodes.item(i).getNodeName());
+                	}
                 }else{
                     processNodes(nodes.item(i));
                 }
@@ -167,8 +177,18 @@ public class ContentExtractor{
         int len=0;
         for(int i=0;i<nodes.getLength();i++){
             if(nodes.item(i).getNodeType()==Node.TEXT_NODE){
-                if(nodes.item(i).getTextContent().trim().length()>0){
-                    len++;
+            	String temp=nodes.item(i).getTextContent().trim();
+                if(temp.length()>0){
+                	boolean containbad=false;
+                	for(String badtext:badText){
+                		if(temp.contains(badtext)){
+                			containbad=true;
+                			break;
+                		}
+                	}
+                	if(!containbad){
+                		len++;
+                	}
                 }
             }
         }
@@ -199,7 +219,8 @@ public class ContentExtractor{
                     if(this.outputComment){
                         this.bufferedWriter.write(mp.strOther+"["+mp+"="+res+"\r\n]");
                     }else{
-                        this.bufferedWriter.write(mp.strOther+"\r\n");
+                    	String temp=mp.strOther+"\r\n";
+                        this.bufferedWriter.write(temp);
                     }
                 }
             }
@@ -222,11 +243,11 @@ public class ContentExtractor{
                 res.strHref+=x;
                 res.strOther+=x;
             }else if(child.getNodeName().equalsIgnoreCase("script")){
-                //内容不计
+                //ignore it
             }else if(child.getNodeName().equalsIgnoreCase("#comment")){
-                //内容不计
+                //ignore it
             }else if(child.getNodeName().equalsIgnoreCase("style")){
-                //内容不计
+                //ignore it
             }else if(child.getChildNodes().getLength()>0){
                 temp=getStatus(child);
                 res.strHref+=temp.strHref;
